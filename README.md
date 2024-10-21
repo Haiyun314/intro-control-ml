@@ -14,7 +14,8 @@ To run this project, you need the following dependencies:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/Haiyun314/Image_processing.git
+   git clone https://github.com/Haiyun314/intro-control-ml.git
+   
 
 2. You can install the required packages using:
     ```bash
