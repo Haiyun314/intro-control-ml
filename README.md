@@ -12,12 +12,25 @@ To run this project, you need the following dependencies:
 
 ## Installation
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/Haiyun314/intro-control-ml.git
-   
+1. Fork the project
 
-2. You can install the required packages using:
+2. Clone the repository:
+   ```bash
+   git clone https://github.com/your_repository_name/intro-control-ml.git
+   
+3. go to the working directory
+   ```bash
+   cd current_working_directory/intro-control-ml
+
+4. create a virtual python enviroment
+   ```bash
+   python -m venv cml
+
+5. active the virtual enviroment
+   ```bash
+   source cml/bin/active
+
+6. You can install the required packages using:
     ```bash
     pip install -r requirements.txt
 
