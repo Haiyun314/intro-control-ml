@@ -35,3 +35,6 @@ To run this project, you need the following dependencies:
     pip install -r requirements.txt
 
 
+## Tested results
+![Denoising Result](./results/pinns_result.png)
+
