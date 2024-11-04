@@ -20,7 +20,7 @@ To run this project, you need the following dependencies:
    
 3. go to the working directory
    ```bash
-   cd current_working_directory/intro-control-ml
+   cd intro-control-ml
 
 4. create a virtual python enviroment
    ```bash
