@@ -1,1 +1,1 @@
-# this file serves as a demo file, where you can try your ideas or codes
+# This file is a demonstration sandbox for testing ideas or experimenting with code snippets.

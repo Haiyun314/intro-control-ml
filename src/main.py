@@ -18,24 +18,27 @@ def simu_fdm():
     return u_uncontrolled[-1] # the final result
 
 
-
 def simu_pinns():
     # Initialize and train the model
     model = HeatEquationNN()
+
+    # here try different optimization methods
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+    
     # alpha = 0.01  # Thermal diffusivity
     alpha = 0.1  # Thermal diffusivity
 
     train_heat_equation_model(model, optimizer, alpha)
+    
     # Create and display the animation
     ani = create_animation(model, ['pinns_result'], save= 1)
 
 
 def main():
-    # fdm_result = simu_fdm()
-    pinns_result = simu_pinns()
+    fdm_result = simu_fdm()
+    # pinns_result = simu_pinns()
     image_names = ['result']
-    # show_image(fdm_result, image_name= image_names)
+    show_image(fdm_result, image_name= image_names)
     # show_3d(fdm_result, image_name= image_names)
 
 

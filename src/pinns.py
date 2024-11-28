@@ -1,7 +1,5 @@
 import torch
 import torch.nn as nn
-import numpy as np
-import matplotlib.pyplot as plt
 
 # Set seed for reproducibility
 torch.manual_seed(0)
