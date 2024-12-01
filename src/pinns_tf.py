@@ -1,6 +1,4 @@
 import tensorflow as tf
-import numpy as np
-import matplotlib.pyplot as plt
 
 def nn_model(input_shape, layers):
     inputs = tf.keras.layers.Input(shape=input_shape)
