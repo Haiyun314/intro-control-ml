@@ -33,44 +33,17 @@ def compute_loss(model, input_bound, input_interior, output_bound, alpha):
     if u_xx is None or u_yy is None:
         raise ValueError("Second-order gradients are None.")
 
-    loss_interior = tf.reduce_mean(tf.square(u_t - alpha * (u_xx + u_yy)))
-    loss_boundary = tf.reduce_mean(tf.square(u_bound - output_bound))
+    loss_interior = tf.reduce_mean(tf.square(u_t - alpha * (u_xx + u_yy)))*(1/len(input_interior))
+    loss_boundary = tf.reduce_mean(tf.square(u_bound - output_bound))*(1/len(input_bound))
 
     return loss_interior + loss_boundary
 
 # Training step
 @tf.function
-def train_step(model):
+def train_step(model, input_bound, input_interior, output_bound, alpha, optimizer):
     with tf.GradientTape() as tape:
         loss_value = compute_loss(model, input_bound, input_interior, output_bound, alpha)
     gradients = tape.gradient(loss_value, model.trainable_variables)
     optimizer.apply_gradients(zip(gradients, model.trainable_variables))
     return loss_value
 
-# Model, optimizer, and training loop
-model = nn_model(input_shape=(3,), layers=[32, 64, 32])
-optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
-
-input_bound = tf.random.uniform([100, 3])
-input_interior = tf.random.uniform([1000, 3])
-output_bound = tf.zeros([100, 1])
-alpha = 0.01
-
-epochs = 100
-for epoch in range(epochs):
-    loss_value = train_step(model)
-    print(f"Epoch {epoch+1}, Loss: {loss_value.numpy()}")
-
-
-x = tf.linspace(-1, 1, 50)
-y = tf.linspace(-1, 1, 50)
-x, y = tf.meshgrid(x, y)
-x = tf.reshape(x, (-1, 1))
-y = tf.reshape(y, (-1, 1))
-t = tf.reshape(tf.ones_like(y)*0.5, (-1, 1))
-pred_data = np.concatenate([x, y, t], axis= -1)
-u = model(pred_data)
-result = tf.reshape(u, (50, 50))
-
-plt.imshow(result, cmap= 'hot')
-plt.show()

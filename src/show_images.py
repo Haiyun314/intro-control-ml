@@ -102,7 +102,14 @@ def create_animation(model,image_name: list, save: int = 0, num_frames=50):
     return ani
 
 
-
 def show_gif(data, image_name: list, save: int = 0):
     assert len(data.shape) == 3, f'to show a gif, we need a sequence of images with shape (n, m, number_of_frames), instead {data.shape}'
-    pass
+    fig, ax = plt.subplots()
+    
+    def update(frame):
+        ax.clf()
+        ax.imshow(data[frame])
+        ax.set_title(image_name)
+    
+    ani = animation.FuncAnimation(fig, update)
+    plt.show
