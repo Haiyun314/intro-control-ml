@@ -7,4 +7,6 @@ src/__pycache__
 results/__pycache__
 test/__pycache__
 
-
+.idea/
+.DS_Store
+*.csv
