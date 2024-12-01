@@ -6,13 +6,6 @@ import torch
 from pinns import HeatEquationNN, train_heat_equation_model
 
 def simu_fdm():
-    # Generate initial condition and boundary conditions
-    initial_u = np.zeros((Nx, Ny))  # Initially no heat
-    left_bc = np.sin(np.linspace(0, np.pi, Nt))  # Heat source on left boundary
-    right_bc = np.zeros(Nt)         # No heat on the right boundary
-    top_bc = np.zeros(Nt)           # No heat on the top boundary
-    bottom_bc = np.sin(np.linspace(0, np.pi, Nt)) # Heat source on bottom boundary
-
     # Simulate the 2D heat equation (uncontrolled case)
     u_uncontrolled = simulate_heat_eq_2d(initial_u, left_bc, right_bc, top_bc, bottom_bc, Nt, Nx, Ny, alpha, dx, dy, dt) # this is a sequence of updating
     return u_uncontrolled[-1] # the final result
@@ -35,11 +28,11 @@ def simu_pinns():
 
 
 def main():
-    fdm_result = simu_fdm()
-    # pinns_result = simu_pinns()
-    image_names = ['result']
-    show_image(fdm_result, image_name= image_names)
-    # show_3d(fdm_result, image_name= image_names)
+    pinns_result = simu_pinns()
+
+    # fdm_result = simu_fdm()
+    # image_names = ['result']
+    # show_image(fdm_result, image_name= image_names)
 
 
 if __name__ == "__main__":

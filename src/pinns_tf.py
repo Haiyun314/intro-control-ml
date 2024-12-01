@@ -1,5 +1,6 @@
-# This file is a demonstration sandbox for testing ideas or experimenting with code snippets.
 import tensorflow as tf
+import numpy as np
+import matplotlib.pyplot as plt
 
 def nn_model(input_shape, layers):
     inputs = tf.keras.layers.Input(shape=input_shape)
@@ -47,7 +48,7 @@ def train_step(model):
     return loss_value
 
 # Model, optimizer, and training loop
-model = nn_model(input_shape=(3,), layers=[128, 128])
+model = nn_model(input_shape=(3,), layers=[32, 64, 32])
 optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
 
 input_bound = tf.random.uniform([100, 3])
@@ -59,3 +60,17 @@ epochs = 100
 for epoch in range(epochs):
     loss_value = train_step(model)
     print(f"Epoch {epoch+1}, Loss: {loss_value.numpy()}")
+
+
+x = tf.linspace(-1, 1, 50)
+y = tf.linspace(-1, 1, 50)
+x, y = tf.meshgrid(x, y)
+x = tf.reshape(x, (-1, 1))
+y = tf.reshape(y, (-1, 1))
+t = tf.reshape(tf.ones_like(y)*0.5, (-1, 1))
+pred_data = np.concatenate([x, y, t], axis= -1)
+u = model(pred_data)
+result = tf.reshape(u, (50, 50))
+
+plt.imshow(result, cmap= 'hot')
+plt.show()
