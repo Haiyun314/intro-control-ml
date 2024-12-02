@@ -13,15 +13,15 @@ def show_image(*images, image_name: list, save: int = 0):
     """
     number_of_images = len(images)
     if number_of_images == 1:
-        plt.figure(figsize= (5, 5))
-        plt.imshow(images[0], cmap='hot', extent=[0, Lx, 0, Ly])
+        plt.figure()
+        plt.imshow(images[0], cmap='hot')
         plt.title(image_name[0])
         plt.colorbar(label='Temperature')
         plt.xlabel('x')
         plt.ylabel('y')
         if save:
             image_path = os.path.join(results_path, f'{image_name[0]}.png')
-            plt.imsave(image_path, images)
+            plt.savefig(image_path)
         plt.show()
         
     else:
@@ -31,7 +31,7 @@ def show_image(*images, image_name: list, save: int = 0):
             ax[i].set_title(image_name[i])
         if save:
             image_path = os.path.join(results_path, f'{image_name[-1]}.png')
-            plt.imsave(image_path, images)
+            plt.savefig(image_path)
         plt.show()
 
 

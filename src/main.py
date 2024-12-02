@@ -71,13 +71,13 @@ def simu_pinns_tf(train: int= 1):
 def main():
     # pinns_result = simu_pinns()
 
-    # fdm_result = simu_fdm()
-    # image_names = ['result']
-    # show_image(fdm_result, image_name= image_names)
+    fdm_result = simu_fdm()
+    image_names = ['fdm_result']
+    show_image(fdm_result, image_name= image_names, save= 1)
 
-    u = simu_pinns_tf()
-    result = tf.reshape(u, (50, 50))
-    show_image(result, image_name=['pinns_tf'])
+    # u = simu_pinns_tf(0)
+    # result = tf.reshape(u, (50, 50))
+    # show_image(result, image_name=['pinns_tf'], save= 1)
 
 if __name__ == "__main__":
     main()

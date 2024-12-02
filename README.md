@@ -36,5 +36,6 @@ To run this project, you need the following dependencies:
 
 
 ## Tested results
-![Denoising Result](./results/pinns_result.png)
+![Pinns with Tensorflow](./results/pinns_tf.png)
 
+![Finite Difference Result](./results/fdm_result.png)

@@ -8,7 +8,7 @@ alpha = 0.01      # Thermal diffusivity
 dx = Lx / (Nx - 1)
 dy = Ly / (Ny - 1)
 Nt = 1000          # Number of time steps
-dt = 1/Nt       # Time step size
+dt = 0.005      # Time step size
 
 # path
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
