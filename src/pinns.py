@@ -4,6 +4,7 @@ import torch.nn as nn
 # Set seed for reproducibility
 torch.manual_seed(0)
 
+
 # Define the neural network for the heat equation (for temperature prediction)
 class HeatEquationNN(nn.Module):
     def __init__(self):
@@ -19,6 +20,7 @@ class HeatEquationNN(nn.Module):
         u = self.fc3(hidden)
         return u
 
+
 # Loss function for the heat equation
 def heat_equation_loss(model, x, y, t, alpha):
     u = model(x, y, t)  # Predict temperature (u)
@@ -33,11 +35,10 @@ def heat_equation_loss(model, x, y, t, alpha):
 
     # Heat equation residual
     heat_residual = u_t - alpha * (u_xx + u_yy)
-    
-
 
     # Loss = squared residual
-    return torch.mean(heat_residual**2)
+    return torch.mean(heat_residual ** 2)
+
 
 # Training loop
 def train_heat_equation_model(model, optimizer, alpha, num_epochs=200):
@@ -45,14 +46,13 @@ def train_heat_equation_model(model, optimizer, alpha, num_epochs=200):
         optimizer.zero_grad()
 
         # Sample random spatial and temporal points with requires_grad=True
-        x = torch.range(0, 1, step= 0.02, requires_grad=True) * 2 - 1  # x in [-1, 1]
-        y = torch.range(0, 1, step= 0.02, requires_grad=True) * 2 - 1  # y in [-1, 1]
-        t = torch.range(0, 1, step= 0.02, requires_grad=True)      # t in [0, 1]
+        x = torch.range(0, 1, step=0.02, requires_grad=True) * 2 - 1  # x in [-1, 1]
+        y = torch.range(0, 1, step=0.02, requires_grad=True) * 2 - 1  # y in [-1, 1]
+        t = torch.range(0, 1, step=0.02, requires_grad=True)  # t in [0, 1]
 
         # Compute loss
         loss = heat_equation_loss(model, x, y, t, alpha)
         loss.backward()
         optimizer.step()
 
-        print(f'Epoch {epoch+1}, Loss: {loss.item()}')
-
+        print(f'Epoch {epoch + 1}, Loss: {loss.item()}')

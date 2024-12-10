@@ -1,5 +1,6 @@
 import tensorflow as tf
 
+
 def nn_model(input_shape, layers):
     inputs = tf.keras.layers.Input(shape=input_shape)
     x = inputs
@@ -7,6 +8,7 @@ def nn_model(input_shape, layers):
         x = tf.keras.layers.Dense(layer, activation='tanh')(x)
     outputs = tf.keras.layers.Dense(1)(x)  # Output layer with 1 neuron
     return tf.keras.models.Model(inputs, outputs)
+
 
 def compute_loss(model, input_bound, input_interior, output_bound, alpha):
     x_i, y_i, t_i = tf.split(input_interior, num_or_size_splits=3, axis=1)
@@ -19,7 +21,7 @@ def compute_loss(model, input_bound, input_interior, output_bound, alpha):
         with tf.GradientTape(persistent=True) as tape2:
             tape2.watch([x_i, y_i, t_i])
             u = model(tf.concat([x_i, y_i, t_i], axis=1))  # Temperature predictions
-        
+
         # First-order gradients
         u_t = tape2.gradient(u, t_i)
         u_x = tape2.gradient(u, x_i)
@@ -31,10 +33,11 @@ def compute_loss(model, input_bound, input_interior, output_bound, alpha):
     if u_xx is None or u_yy is None:
         raise ValueError("Second-order gradients are None.")
 
-    loss_interior = tf.reduce_mean(tf.square(u_t - alpha * (u_xx + u_yy)))*(1/len(input_interior))
-    loss_boundary = tf.reduce_mean(tf.square(u_bound - output_bound))*(1/len(input_bound))
+    loss_interior = tf.reduce_mean(tf.square(u_t - alpha * (u_xx + u_yy))) * (1 / len(input_interior))
+    loss_boundary = tf.reduce_mean(tf.square(u_bound - output_bound)) * (1 / len(input_bound))
 
     return loss_interior + loss_boundary
+
 
 # Training step
 @tf.function
@@ -44,4 +47,3 @@ def train_step(model, input_bound, input_interior, output_bound, alpha, optimize
     gradients = tape.gradient(loss_value, model.trainable_variables)
     optimizer.apply_gradients(zip(gradients, model.trainable_variables))
     return loss_value
-

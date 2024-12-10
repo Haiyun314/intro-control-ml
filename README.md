@@ -37,16 +37,16 @@ To run this project, you need the following dependencies:
 ## Loss and Notation
 
 ### Notation
-- $  \mathbf{x}_b, \mathbf{y}_b, \mathbf{t}_b $: Boundary points (spatial and temporal). 
-- $ u_b $: True boundary values at these points.
-- $ \mathbf{x}_i, \mathbf{y}_i, \mathbf{t}_i $: Interior points of the domain (spatial and temporal).
-- $ u(\mathbf{x}, \mathbf{y}, t) $: Neural network's predicted scalar output (e.g., temperature).
-- $ \frac{\partial u}{\partial t} $: First-order time derivative of $ u$.
-- $ \frac{\partial u}{\partial x}, \frac{\partial u}{\partial y} $: First-order spatial derivatives of $ u$.
-- $ \frac{\partial^2 u}{\partial x^2}, \frac{\partial^2 u}{\partial y^2} $: Second-order spatial derivatives of $u$.
-- $ \alpha $: Thermal diffusivity constant (or similar parameter).
-- $ N_b $: Number of boundary points.
-- $ N_i $: Number of interior points.
+- $\mathbf{x}_b, \mathbf{y}_b, \mathbf{t}_b$: Boundary points (spatial and temporal). 
+- $u_b $: True boundary values at these points.
+- $\mathbf{x}_i, \mathbf{y}_i, \mathbf{t}_i$: Interior points of the domain (spatial and temporal).
+- $u(\mathbf{x}, \mathbf{y}, t)$: Neural network's predicted scalar output (e.g., temperature).
+- $\frac{\partial u}{\partial t}$: First-order time derivative of $ u$.
+- $\frac{\partial u}{\partial x}, \frac{\partial u}{\partial y}$: First-order spatial derivatives of $ u$.
+- $\frac{\partial^2 u}{\partial x^2}, \frac{\partial^2 u}{\partial y^2}$: Second-order spatial derivatives of $u$.
+- $\alpha$: Thermal diffusivity constant (or similar parameter).
+- $N_b$: Number of boundary points.
+- $N_i$: Number of interior points.
 
 ### Loss Function
 $
