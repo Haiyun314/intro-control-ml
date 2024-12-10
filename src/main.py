@@ -5,8 +5,18 @@ from show_images import show_image, create_animation
 import torch
 from pinns import HeatEquationNN, train_heat_equation_model
 import tensorflow as tf
-from pinns_tf import nn_model, train_step
+from pinns_tf import nn_model, train_step, train_with_early_stopping, plot_loss_history
+from datetime import datetime
+import time
+import pandas as pd
 
+def compute_l1_error(pinn_result, fdm_result):
+    # Compute L1 norm (mean absolute error) between PINN and FDM results
+    return np.mean(np.abs(pinn_result - fdm_result))
+
+def compute_l2_error(pinn_result, fdm_result):
+    # Compute L2 norm (mean squared error) between PINN and FDM results
+    return np.sqrt(np.mean(np.square(pinn_result - fdm_result)))
 
 def simu_fdm():
     # Simulate the 2D heat equation (uncontrolled case)
@@ -33,10 +43,14 @@ def simu_pinns():
 
 def simu_pinns_tf(train: bool = True,
                   alpha: float = 0.01,
-                  epochs: int = 100,
+                  epochs: int = 5000,
                   optimizer: tf.keras.optimizers = tf.keras.optimizers.Adam(learning_rate=0.001),
                   activation_function='tanh',
+                  patience: int = 100,  # Early stopping patience
+                  use_early_stopping: bool = True,
+                  dt: datetime = datetime.now(),
                   verbose: bool = True):
+    
     x = tf.linspace(-1, 1, 50)
     y = tf.linspace(-1, 1, 50)
     x, y = tf.meshgrid(x, y)
@@ -68,17 +82,35 @@ def simu_pinns_tf(train: bool = True,
     bound_output = tf.cast(tf.reshape(bound_l[bound], (-1, 1)), dtype= tf.float32)
     output_init = tf.zeros_like(x, dtype= tf.float32)
 
-    alpha = 0.01
-
-    epochs = 5000
     if train:
         # Model, optimizer, and training loop
-        model = nn_model(input_shape=(3,), layers=[16, 32, 32, 16])
+        model = nn_model(input_shape=(3,), layers=[16, 32, 32, 16],
+                         activation_function = activation_function)
         optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
-        for epoch in range(epochs):
-            loss_value = train_step(model,input_init, bound_input, interior_input,output_init ,bound_output, alpha, optimizer)
-            if verbose:
-                print(f"Epoch {epoch+1}, Loss: {loss_value.numpy()}")
+        
+        if use_early_stopping:
+            model = train_with_early_stopping(
+                model=model,
+                init_points=input_init,
+                input_bound=bound_input,
+                input_interior=interior_input,
+                output_init=output_init,
+                output_bound=bound_output,
+                alpha=alpha,
+                optimizer=optimizer,
+                epochs=epochs,
+                patience=patience,
+                img_name='PINN_loss_history.png',
+                verbose=True
+            )
+        else:
+            history = []
+            for epoch in range(epochs):
+                loss_value = train_step(model,input_init, bound_input, interior_input,output_init ,bound_output, alpha, optimizer)
+                history.append(loss_value)
+                if verbose:
+                    print(f"Epoch {epoch+1}, Loss: {loss_value.numpy()}")
+            plot_loss_history(history, img_name='PINN_loss_history.png') 
         
         model.save(os.path.join(models_path, 'tf_pinns.h5'))
     else:
@@ -88,16 +120,55 @@ def simu_pinns_tf(train: bool = True,
     return u
 
 
-def main():
+def main(
+    execution_parameters = {
+        'train': True,
+        'alpha': 0.01,
+        'epochs': 5000,
+        'optimizer': tf.keras.optimizers.Adam(learning_rate=0.001),
+        'activation_function':'tanh',
+        'patience': 100,  # Early stopping patience
+        'use_early_stopping': False, # stop training if there's no improvement
+        'verbose': True
+    }
+):
+    # fetch current timestamp
+    dt = datetime.now().strftime('%y%m%d_%H%M%S')
+    execution_parameters['dt'] = dt
+    
     # pinns_result = simu_pinns()
 
-    # fdm_result = simu_fdm()
-    # image_names = ['fdm_result']
-    # show_image(fdm_result, image_name= image_names, save= 1)
+    # run FinDiff simulation
+    fdm_result = simu_fdm()
+    show_image(fdm_result, image_name=['fdm_result'], save=True)
 
-    u = simu_pinns_tf(1)
-    result = tf.reshape(u, (50, 50))
-    show_image(result, image_name=['pinns_tf'], save= 1)
+    # run PINN simulation
+    u = simu_pinns_tf(**execution_parameters)
+    pinn_result = tf.reshape(u, (50, 50))
+    show_image(pinn_result, image_name=['pinns_tf'], save=True)
+    
+    # Reshape both results for comparison (assuming 50x50 grid)
+    fdm_result_reshaped = fdm_result.reshape((50, 50))
+    pinn_result_reshaped = pinn_result.numpy().reshape((50, 50))
+    
+    # Compute L1 and L2 errors
+    l1_error = compute_l1_error(pinn_result_reshaped, fdm_result_reshaped)
+    l2_error = compute_l2_error(pinn_result_reshaped, fdm_result_reshaped)
+    
+    # saving optimizer informations
+    optimizer = execution_parameters.get('optimizer')
+    optimizer_name = optimizer.__class__.__name__
+    learning_rate = optimizer.get_config().get('learning_rate', 'N/A')  # default to 'N/A' if not found
+    execution_parameters['optimizer_name'] = optimizer_name
+    execution_parameters['optimizer_learning_rate'] = learning_rate
+    
+    
+    # build error matrix, with execution parameters
+    errors_df = pd.DataFrame({'l1_error': l1_error,
+                              'l2_error': l2_error} | execution_parameters,
+                             index=[0])
+    print(errors_df)
+    errors_df.to_csv(os.path.join('results', f'results_{dt}.csv'))
 
 if __name__ == "__main__":
     main()
