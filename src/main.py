@@ -31,7 +31,12 @@ def simu_pinns():
     ani = create_animation(model, ['pinns_result'], save=1)
 
 
-def simu_pinns_tf(train: int = 1, verbose=True):
+def simu_pinns_tf(train: bool = True,
+                  alpha: float = 0.01,
+                  epochs: int = 100,
+                  optimizer: tf.keras.optimizers = tf.keras.optimizers.Adam(learning_rate=0.001),
+                  activation_function='tanh',
+                  verbose: bool = True):
     x = tf.linspace(-1, 1, 50)
     y = tf.linspace(-1, 1, 50)
     x, y = tf.meshgrid(x, y)
@@ -51,13 +56,11 @@ def simu_pinns_tf(train: int = 1, verbose=True):
     bound_input = tf.convert_to_tensor(pred_data[bound], dtype=tf.float32)
     bound_output = tf.cast(tf.reshape(bound_l[bound], (-1, 1)), dtype=tf.float32)
 
-    alpha = 0.01
-
-    epochs = 100
     if train:
         # Model, optimizer, and training loop
-        model = nn_model(input_shape=(3,), layers=[32, 64, 32])
-        optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
+        model = nn_model(input_shape=(3,), layers=[32, 64, 32],
+                         activation_function=activation_function)
+
         for epoch in range(epochs):
             loss_value = train_step(model, bound_input, interior_input, bound_output, alpha, optimizer)
             if verbose:
@@ -75,12 +78,11 @@ def main():
     # pinns_result = simu_pinns()
 
     fdm_result = simu_fdm()
-    image_names = ['fdm_result']
-    show_image(fdm_result, image_name=image_names, save=False)
+    show_image(fdm_result, image_name=['fdm_result'], save=False)
 
     u = simu_pinns_tf(verbose=False)
-    result = tf.reshape(u, (50, 50))
-    show_image(result, image_name=['pinns_tf'], save=False)
+    pinns_result = tf.reshape(u, (50, 50))
+    show_image(pinns_result, image_name=['pinns_tf'], save=False)
 
 
 if __name__ == "__main__":

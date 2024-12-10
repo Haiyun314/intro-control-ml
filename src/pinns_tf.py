@@ -1,11 +1,11 @@
 import tensorflow as tf
 
 
-def nn_model(input_shape, layers):
+def nn_model(input_shape, layers, activation_function: str = 'tanh'):
     inputs = tf.keras.layers.Input(shape=input_shape)
     x = inputs
     for layer in layers:
-        x = tf.keras.layers.Dense(layer, activation='tanh')(x)
+        x = tf.keras.layers.Dense(layer, activation=activation_function)(x)
     outputs = tf.keras.layers.Dense(1)(x)  # Output layer with 1 neuron
     return tf.keras.models.Model(inputs, outputs)
 
