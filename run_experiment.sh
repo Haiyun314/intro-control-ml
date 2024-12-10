@@ -1,2 +1,2 @@
 #!/bin/bash
-python ./src/main.py
+poetry run python ./src/main.py
