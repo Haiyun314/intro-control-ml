@@ -49,11 +49,9 @@ To run this project, you need the following dependencies:
 - $ N_i $: Number of interior points.
 
 ### Loss Function
-$
-\text{Total Loss} = 
+$ \text{Total Loss} = 
 \frac{1}{N_b} \sum_{j=1}^{N_b} \left( u(\mathbf{x}_b^j, \mathbf{y}_b^j, t_b^j) - u_b^j \right)^2 + 
-\frac{1}{N_i} \sum_{i=1}^{N_i} \left( \frac{\partial u}{\partial t_i} - \alpha \left( \frac{\partial^2 u}{\partial x_i^2} + \frac{\partial^2 u}{\partial y_i^2} \right) \right)^2
-$
+\frac{1}{N_i} \sum_{i=1}^{N_i} \left( \frac{\partial u}{\partial t_i} - \alpha \left( \frac{\partial^2 u}{\partial x_i^2} + \frac{\partial^2 u}{\partial y_i^2} \right) \right)^2 $
 
 
 ## Tested results
