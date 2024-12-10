@@ -57,6 +57,8 @@ $$
 
 
 ## Tested results
+![Finite Difference Result](./results/fdm_result.png)
+
 ![Pinns with Tensorflow](./results/pinns_tf.png)
 
-![Finite Difference Result](./results/fdm_result.png)
+![PINNs loss](./results/PINN_loss_history.png)
