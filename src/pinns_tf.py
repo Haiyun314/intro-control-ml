@@ -1,12 +1,14 @@
 import tensorflow as tf
 
-def nn_model(input_shape, layers):
+
+def nn_model(input_shape, layers, activation_function: str = 'tanh'):
     inputs = tf.keras.layers.Input(shape=input_shape)
     x = inputs
     for layer in layers:
-        x = tf.keras.layers.Dense(layer, activation='tanh')(x)
-    outputs = tf.keras.layers.Dense(1, activation= 'sigmoid')(x)  # Output layer with 1 neuron
+        x = tf.keras.layers.Dense(layer, activation=activation_function)(x)
+    outputs = tf.keras.layers.Dense(1)(x)  # Output layer with 1 neuron
     return tf.keras.models.Model(inputs, outputs)
+
 
 def compute_loss(model, init_points, input_bound, input_interior,output_init, output_bound, alpha):
     x_i, y_i, t_i = tf.split(input_interior, num_or_size_splits=3, axis=1)
@@ -19,7 +21,7 @@ def compute_loss(model, init_points, input_bound, input_interior,output_init, ou
         with tf.GradientTape(persistent=True) as tape2:
             tape2.watch([x_i, y_i, t_i])
             u = model(tf.concat([x_i, y_i, t_i], axis=1))  # Temperature predictions
-        
+
         # First-order gradients
         u_t = tape2.gradient(u, t_i)
         u_x = tape2.gradient(u, x_i)
@@ -37,6 +39,7 @@ def compute_loss(model, init_points, input_bound, input_interior,output_init, ou
 
     return loss_interior + loss_boundary + 0.1 * loss_init
 
+
 # Training step
 @tf.function
 def train_step(model, init_points, input_bound, input_interior,output_init, output_bound, alpha, optimizer):
@@ -45,4 +48,3 @@ def train_step(model, init_points, input_bound, input_interior,output_init, outp
     gradients = tape.gradient(loss_value, model.trainable_variables)
     optimizer.apply_gradients(zip(gradients, model.trainable_variables))
     return loss_value
-
