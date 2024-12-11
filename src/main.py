@@ -7,7 +7,6 @@ from pinns import HeatEquationNN, train_heat_equation_model
 import tensorflow as tf
 from pinns_tf import nn_model, train_step, train_with_early_stopping, plot_loss_history
 from datetime import datetime
-import time
 import pandas as pd
 
 def compute_l1_error(pinn_result, fdm_result):
