@@ -65,7 +65,7 @@ def simu_pinns_tf(train: bool = True,
     t = tf.reshape(tf.repeat(tf.range(0, 10, dtype= tf.float32)/10, repeats= 250), (-1, 1)) # time from 0 to 10
     t = tf.random.shuffle(t, seed= 1)
     t_init = tf.zeros_like(t, dtype= tf.float32)
-    t_test = tf.ones_like(t, dtype= tf.float32) * 2.5
+    t_test = tf.ones_like(t, dtype= tf.float32) * 2.5 # time 2.5
 
     pred_data = np.concatenate([x, y, t], axis= -1) # train
     input_init = np.concatenate([x, y, t_init], axis= -1) # train init state
