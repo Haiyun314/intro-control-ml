@@ -48,6 +48,7 @@ def simu_pinns_tf(train: bool = True,
                   activation_function='tanh',
                   patience: int = 100,  # Early stopping patience
                   use_early_stopping: bool = True,
+                  dropout_rate: float = 0.1,  # rate of neurons to dropout
                   dt: datetime = datetime.now(),
                   verbose: bool = True):
     
@@ -85,7 +86,8 @@ def simu_pinns_tf(train: bool = True,
     if train:
         # Model, optimizer, and training loop
         model = nn_model(input_shape=(3,), layers=[16, 32, 32, 16],
-                         activation_function = activation_function)
+                         activation_function = activation_function,
+                         dropout_rate = dropout_rate)
         optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
         
         if use_early_stopping:
@@ -127,6 +129,7 @@ def main(
         'epochs': 5000,
         'optimizer': tf.keras.optimizers.Adam(learning_rate=0.001),
         'activation_function':'tanh',
+        'dropout_rate': 0.,  # rate of neurons to dropout
         'patience': 100,  # Early stopping patience
         'use_early_stopping': False, # stop training if there's no improvement
         'verbose': True

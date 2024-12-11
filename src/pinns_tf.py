@@ -13,7 +13,7 @@ def plot_loss_history(history, img_name='PINN_loss_history.png'):
     
 def nn_model(input_shape, layers, 
              activation_function: str = 'tanh',
-             dropout_rate: float = 0.1,  # rate of neurons to dropout
+             dropout_rate: float = 0.0,  # rate of neurons to dropout
              ):
     inputs = tf.keras.layers.Input(shape=input_shape)
     x = inputs
