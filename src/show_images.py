@@ -4,7 +4,7 @@ from setting import *
 import numpy as np
 import torch
 
-def show_image(*images, image_name: list, save: int = 0):
+def show_image(*images, image_name: list, save: bool | int = False):
     """
     Args:
         images: numpy matrix
