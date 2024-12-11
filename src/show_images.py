@@ -4,7 +4,8 @@ from setting import *
 import numpy as np
 import torch
 
-def show_image(*images, image_name: list, save: bool | int = False):
+def show_image(*images, image_name: list, save: bool | int = False,
+               vmin: float = 0.0, vmax: float = 1.0):
     """
     Args:
         images: numpy matrix
@@ -14,7 +15,7 @@ def show_image(*images, image_name: list, save: bool | int = False):
     number_of_images = len(images)
     if number_of_images == 1:
         plt.figure()
-        plt.imshow(images[0], cmap='hot')
+        plt.imshow(images[0], cmap='hot', vmin=vmin, vmax=vmax)
         plt.title(image_name[0])
         plt.colorbar(label='Temperature')
         plt.xlabel('x')
@@ -27,7 +28,7 @@ def show_image(*images, image_name: list, save: bool | int = False):
     else:
         _, ax = plt.subplots(nrows=1, ncols= number_of_images, figsize=(5 * number_of_images, 5))
         for i in range(number_of_images):
-            ax[i].imshow(images[i])
+            ax[i].imshow(images[i], vmin=vmin, vmax=vmax)
             ax[i].set_title(image_name[i])
         if save:
             image_path = os.path.join(results_path, f'{image_name[-1]}.png')
