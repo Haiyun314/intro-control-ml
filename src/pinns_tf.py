@@ -25,9 +25,10 @@ def nn_model(input_shape, layers,
     return tf.keras.models.Model(inputs, outputs)
 
 
-def compute_loss(model, init_points, input_bound, input_interior,output_init, output_bound, alpha):
+def compute_loss(model, init_points, input_bound, input_interior, input_target,output_init, output_bound, output_target, alpha):
     x_i, y_i, t_i = tf.split(input_interior, num_or_size_splits=3, axis=1)
 
+    u_fdm = model(input_target)
     u_bound = model(input_bound)
     u_init = model(init_points)
     # Gradient computation using GradientTape
@@ -48,24 +49,25 @@ def compute_loss(model, init_points, input_bound, input_interior,output_init, ou
     if u_xx is None or u_yy is None:
         raise ValueError("Second-order gradients are None.")
 
+    loss_fdm = tf.reduce_mean(tf.square(u_fdm - output_target))*(1/len(input_interior))
     loss_interior = tf.reduce_mean(tf.square(u_t - alpha * (u_xx + u_yy)))*(1/len(input_interior))
     loss_boundary = tf.reduce_mean(tf.square(u_bound - output_bound))*(1/len(input_bound))
     loss_init = tf.reduce_mean(tf.square(u_init - output_init))*(1/len(init_points))
 
-    return loss_interior + loss_boundary + 0.1 * loss_init
+    return loss_interior + loss_boundary + loss_init + loss_fdm
 
 
 # Training step
 @tf.function
-def train_step(model, init_points, input_bound, input_interior,output_init, output_bound, alpha, optimizer):
+def train_step(model, init_points, input_bound, input_interior,input_target, output_init, output_bound, output_target, alpha, optimizer):
     with tf.GradientTape() as tape:
-        loss_value = compute_loss(model, init_points, input_bound, input_interior,output_init, output_bound, alpha)
+        loss_value = compute_loss(model, init_points, input_bound, input_interior,input_target, output_init, output_bound,output_target, alpha)
     gradients = tape.gradient(loss_value, model.trainable_variables)
     optimizer.apply_gradients(zip(gradients, model.trainable_variables))
     return loss_value
 
-def train_with_early_stopping(model, init_points, input_bound, input_interior, 
-                              output_init, output_bound, alpha, optimizer, 
+def train_with_early_stopping(model, init_points, input_bound, input_interior, input_target,
+                              output_init, output_bound,output_target, alpha, optimizer, 
                               epochs=5000, patience=100, 
                               img_name='PINN_loss_history.png',
                               verbose=True):
@@ -74,8 +76,8 @@ def train_with_early_stopping(model, init_points, input_bound, input_interior,
     wait = 0  # Counter for early stopping
 
     for epoch in range(epochs):
-        loss_value = train_step(model, init_points, input_bound, input_interior, 
-                                output_init, output_bound, alpha, optimizer)
+        loss_value = train_step(model, init_points, input_bound, input_interior, input_target, 
+                                output_init, output_bound,output_target, alpha, optimizer)
         history.append(loss_value.numpy())
 
         if verbose:

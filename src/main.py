@@ -64,10 +64,13 @@ def simu_pinns_tf(train: bool = True,
     t = tf.reshape(tf.repeat(tf.range(0, 10, dtype= tf.float32)/10, repeats= 250), (-1, 1)) # time from 0 to 10
     t = tf.random.shuffle(t, seed= 1)
     t_init = tf.zeros_like(t, dtype= tf.float32)
-    t_test = tf.ones_like(t, dtype= tf.float32) * 2.5 # time 2.5
+    t_target = tf.ones_like(t, dtype= tf.float32)
+    t_test = tf.ones_like(t, dtype= tf.float32)
+
 
     pred_data = np.concatenate([x, y, t], axis= -1) # train
     input_init = np.concatenate([x, y, t_init], axis= -1) # train init state
+    input_target = np.concatenate([x, y, t_target], axis= -1)
     test_data = np.concatenate([x, y, t_test], axis= -1) # test the reult at time = 1
 
     # bound mask
@@ -81,7 +84,8 @@ def simu_pinns_tf(train: bool = True,
     bound_input = tf.convert_to_tensor(pred_data[bound], dtype= tf.float32)
     bound_output = tf.cast(tf.reshape(bound_l[bound], (-1, 1)), dtype= tf.float32)
     output_init = tf.zeros_like(x, dtype= tf.float32)
-
+    output_target = tf.cast(simu_fdm(), dtype= tf.float32)
+    output_target = tf.reshape(output_target, (-1, 1))
     if train:
         # Model, optimizer, and training loop
         model = nn_model(input_shape=(3,), layers=[16, 32, 32, 16],
@@ -95,8 +99,10 @@ def simu_pinns_tf(train: bool = True,
                 init_points=input_init,
                 input_bound=bound_input,
                 input_interior=interior_input,
+                input_target= input_target,
                 output_init=output_init,
                 output_bound=bound_output,
+                output_target= output_target,
                 alpha=alpha,
                 optimizer=optimizer,
                 epochs=epochs,
@@ -107,7 +113,7 @@ def simu_pinns_tf(train: bool = True,
         else:
             history = []
             for epoch in range(epochs):
-                loss_value = train_step(model,input_init, bound_input, interior_input,output_init ,bound_output, alpha, optimizer)
+                loss_value = train_step(model,input_init, bound_input, interior_input, input_target, output_init ,bound_output,output_target, alpha, optimizer)
                 history.append(loss_value)
                 if verbose:
                     print(f"Epoch {epoch+1}, Loss: {loss_value.numpy()}")
@@ -123,9 +129,9 @@ def simu_pinns_tf(train: bool = True,
 
 def main(
     execution_parameters = {
-        'train': True,
+        'train': False,
         'alpha': 0.01,
-        'epochs': 5000,
+        'epochs': 10000,
         'optimizer': tf.keras.optimizers.Adam(learning_rate=0.001),
         'activation_function':'tanh',
         'dropout_rate': 0.,  # rate of neurons to dropout
