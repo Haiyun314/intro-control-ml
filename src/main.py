@@ -8,6 +8,7 @@ import tensorflow as tf
 from pinns_tf import nn_model, train_step, train_with_early_stopping, plot_loss_history
 from datetime import datetime
 import pandas as pd
+from fourier_result import get_heat_eq_solution
 
 def compute_l1_error(pinn_result, fdm_result):
     # Compute L1 norm (mean absolute error) between PINN and FDM results
@@ -23,6 +24,10 @@ def simu_fdm():
                                          dt)  # this is a sequence of updating
     return u_uncontrolled[-1]  # the final result
 
+def simu_fourier():
+    # Simulate the 2D heat equation using Fourier transform
+    u_fourier = get_heat_eq_solution()
+    return u_fourier
 
 def simu_pinns():
     # Initialize and train the model
