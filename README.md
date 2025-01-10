@@ -73,6 +73,6 @@ $$
 
 ![Pinns with Tensorflow](./results/pinns_tf.png)
 
-! [Fourier result](./results/fourier_result.png)
+![Fourier result](./results/fourier_result.png)
 
 ![PINNs loss](./results/PINN_loss_history.png)
