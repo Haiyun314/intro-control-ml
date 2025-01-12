@@ -151,18 +151,24 @@ def main(
         'dropout_rate': 0.,  # rate of neurons to dropout
         'patience': 100,  # Early stopping patience
         'use_early_stopping': False, # stop training if there's no improvement
-        'verbose': True
+        'verbose': True,
+        'other_models': False
     }
 ):
     # fetch current timestamp
     dt = datetime.now().strftime('%y%m%d_%H%M%S')
     execution_parameters['dt'] = dt
     
-    # pinns_result = simu_pinns()
+    if execution_parameters['other_models']:
+        # run Fourier simulation
+        fourier_result = simu_fourier()
+        show_image(fourier_result, image_name=['fourier_result'], save=True)
 
-    # run FinDiff simulation
-    fdm_result = simu_fdm()
-    show_image(fdm_result, image_name=['fdm_result'], save=True)
+        # pinns_result = simu_pinns()
+
+        # run FinDiff simulation
+        fdm_result = simu_fdm()
+        show_image(fdm_result, image_name=['fdm_result'], save=True)
 
     # run PINN simulation
     u = simu_pinns_tf(**execution_parameters)
@@ -218,7 +224,8 @@ if __name__ == "__main__":
                 'dropout_rate': 0., 
                 'patience': 100,  
                 'use_early_stopping': False, 
-                'verbose': True
+                'verbose': True,
+                'other_models': False
             }
             main(execution_parameters)
 
