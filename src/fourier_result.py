@@ -1,10 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-Lx = 10        
-Ly = 10        
-Nx = 128        # Number of grid points
-Ny = 128      
+Lx = 1        
+Ly = 1        
+Nx = 50        # Number of grid points
+Ny = 50      
 alpha = 0.01    # Thermal diffusivity
 Tmax = 1000     
 dt = 0.01    
@@ -37,5 +37,5 @@ def get_heat_eq_solution():
         u_new[:, -1] = 0
         u_new[0, :] = 0
         u_new[-1, :] = 0
-    return u_new
+    return u_new.real
 
