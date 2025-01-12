@@ -2,7 +2,7 @@
 - [Installation](#installation)
 - [Loss and Notation](#loss-and-notation)
 - [Results](#tested-results)
-- [Fourier](#steps-to-derive)
+- [Fourier](#steps-to-derive-coefficient)
 
 ## intro-control-ml
 
@@ -76,7 +76,7 @@ $$
 ![Fourier result](./results/fourier_result.png)
 
 ![PINNs loss](./results/PINN_loss_history.png)
-## Steps to Derive $ c_n $
+## Steps to Derive Coefficient
 
 ### 1. Start with the Fourier Series
 $$
