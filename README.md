@@ -94,14 +94,14 @@ $$
 Integrate both sides over one period, $ x \in [-T/2, T/2] $:
 
 $$
-\int_{-T/2}^{T/2} g(x) e^{-i 2 \pi m x / T} \, dx = \int_{-T/2}^{T/2} \sum_{n=-\infty}^\infty c_n e^{i 2 \pi (n - m) x / T} \, dx
+\int_{-T/2}^{T/2} g(x) e^{-i 2 \pi m x / T} \, dx = \int_{-T/2}^{T/2} \sum_{n=-\infty}^\infty c_n e^{i 2 \pi (n - m) x / T} \ dx
 $$
 
 ### 4. Use Orthogonality
 The key property of Fourier series is **orthogonality**:
 
 $$
-\int_{-T/2}^{T/2} e^{i 2 \pi (n - m) x / T} \, dx =
+\int_{-T/2}^{T/2} e^{i 2 \pi (n - m) x / T} \ dx =
 \begin{cases} 
 T, & \text{if } n = m, \\ 
 0, & \text{if } n \neq m.
@@ -117,7 +117,7 @@ This means only the $ n = m $ term survives in the summation.
 On the left-hand side, we have:
 
 $$
-\int_{-T/2}^{T/2} g(x) e^{-i 2 \pi m x / T} \, dx
+\int_{-T/2}^{T/2} g(x) e^{-i 2 \pi m x / T} \ dx
 $$
 
 On the right-hand side, only the $ n = m $ term survives:
@@ -129,14 +129,14 @@ $$
 Equating and solving for $ c_m $:
 
 $$
-c_m = \frac{1}{T} \int_{-T/2}^{T/2} g(x) e^{-i 2 \pi m x / T} \, dx
+c_m = \frac{1}{T} \int_{-T/2}^{T/2} g(x) e^{-i 2 \pi m x / T} \ dx
 $$
 
 ### 6. Final Formula
 For any integer $ n $, the Fourier coefficient is:
 
 $$
-c_n = \frac{1}{T} \int_{-T/2}^{T/2} g(x) e^{-i 2 \pi n x / T} \, dx
+c_n = \frac{1}{T} \int_{-T/2}^{T/2} g(x) e^{-i 2 \pi n x / T} \ dx
 $$
 
 ---
