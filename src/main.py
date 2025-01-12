@@ -96,7 +96,7 @@ def simu_pinns_tf(train: bool = True,
         model = nn_model(input_shape=(3,), layers=[16, 32, 32, 16],
                          activation_function = activation_function,
                          dropout_rate = dropout_rate)
-        optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
+        optimizer = optimizer
         
         if use_early_stopping:
             model = train_with_early_stopping(
@@ -118,7 +118,16 @@ def simu_pinns_tf(train: bool = True,
         else:
             history = []
             for epoch in range(epochs):
-                loss_value = train_step(model,input_init, bound_input, interior_input, input_target, output_init ,bound_output,output_target, alpha, optimizer)
+                loss_value = train_step(model,
+                                        input_init, 
+                                        bound_input, 
+                                        interior_input, 
+                                        input_target, 
+                                        output_init ,
+                                        bound_output,
+                                        output_target, 
+                                        alpha, 
+                                        optimizer)
                 history.append(loss_value)
                 if verbose:
                     print(f"Epoch {epoch+1}, Loss: {loss_value.numpy()}")
@@ -184,4 +193,33 @@ def main(
     errors_df.to_csv(os.path.join('results', f'results_{dt}.csv'))
 
 if __name__ == "__main__":
-    main()
+    optimizers = ['Adam', 'Adamax', 'AdamW', 'SGD']
+    learning_rates = [0.001, 0.005, 0.01]
+
+    for i in optimizers:
+        for j in learning_rates:
+            if i == 'Adam':
+                optimizer = tf.keras.optimizers.Adam(learning_rate=j)
+            elif i == 'Adamax':
+                optimizer = tf.keras.optimizers.Adamax(learning_rate=j)
+            elif i == 'AdamW':
+                optimizer = tf.keras.optimizers.AdamW(learning_rate=j)
+            elif i == 'SGD':
+                optimizer = tf.keras.optimizers.SGD(learning_rate=j)
+            else:
+                raise ValueError(f"Unsupported optimizer: {i}")
+            
+            execution_parameters = {
+                'train': False,
+                'alpha': 0.01,
+                'epochs': 10000,
+                'optimizer': optimizer,
+                'activation_function': 'tanh',
+                'dropout_rate': 0., 
+                'patience': 100,  
+                'use_early_stopping': False, 
+                'verbose': True
+            }
+            main(execution_parameters)
+
+
