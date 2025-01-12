@@ -12,10 +12,6 @@ dx = Lx / Nx
 dy = Ly / Ny 
 Nt = int(Tmax / dt)  # Number of time steps
 
-# Discretize spatial domain
-x = np.linspace(0, Lx, Nx, endpoint=False)
-y = np.linspace(0, Ly, Ny, endpoint=False)
-
 # Initial condition
 u0 = np.zeros((Ny, Nx)) 
 u0[:, 0] = 1       
